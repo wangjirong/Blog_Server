@@ -17,8 +17,8 @@ Router.get('/gitHub_oAuth', async (req, res, next) => {
         `client_secret=${Resource.GitHubClientSecret}&` +
         `code=${req.query.code}`;
 
-    const access_token = await getToken(token_uri);
-    const result = await getUser(access_token);
+    const access_token = await getGitHubToken(token_uri);
+    const result = await getGitHubUser(access_token);
     const user = result.data;
     const isUser = await User.findOne({
         id: user.id
@@ -37,7 +37,16 @@ Router.get('/gitHub_oAuth', async (req, res, next) => {
     res.status(200).send(isUser);
 })
 
-function getToken(url) {
+Router.get('/qq_oAuth', async (req, res, next) => {
+    const access_token = req.query.access_token;
+    const openId = await getOpenId(access_token);
+    const QQ_User = await getUserInfo(access_token, Resource.QQAppId, openId);
+    console.log(QQ_user);
+    res.status(200).send(QQ_User);
+
+})
+
+function getGitHubToken(url) {
     return new Promise((resolve, reject) => {
         axios({
             method: 'get',
@@ -53,7 +62,7 @@ function getToken(url) {
     })
 }
 
-function getUser(token) {
+function getGitHubUser(token) {
     return new Promise((resolve, reject) => {
         axios({
             method: 'get',
@@ -70,7 +79,37 @@ function getUser(token) {
     })
 }
 
-function isExisted(id) {
-    return
+function getOpenId(access_token) {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: 'GET',
+            url: `https://graph.qq.com/oauth2.0/me?access_token=${access_token}`,
+            headers: {
+                accept: 'application/json'
+            }
+        }).then(res => {
+            resolve(res.data.openid);
+        }).catch(error => {
+            reject(error);
+        })
+    })
 }
+
+function getUserInfo(access_token, appId, openId) {
+    return new Promise((resolve, reject) => {
+        axios({
+            method: "GET",
+            url: `https://graph.qq.com/user/get_user_info?access_token=${access_token}&oauth_consumer_key=${appId}&openId=${openId}`,
+            headers: {
+                accept: 'application/json'
+            }
+        }).then(res => {
+            resolve(res.data);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
+
 module.exports = Router;
