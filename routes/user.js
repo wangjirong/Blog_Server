@@ -39,7 +39,7 @@ Router.get('/gitHub_oAuth', async (req, res, next) => {
 
 Router.get('/qq_oAuth', async (req, res, next) => {
     const access_token = req.query.access_token;
-    const openId = await getOpenId(access_token); //每个qq具有唯一openid
+    const openId = req.query.openId;
     let user = await QQ_User.findOne({
         id: openId
     })
@@ -91,22 +91,6 @@ function getGitHubUser(token) {
             }
         }).then(res => {
             resolve(res);
-        }).catch(error => {
-            reject(error);
-        })
-    })
-}
-
-//与qq号一一对应
-function getOpenId(access_token) {
-    return new Promise((resolve, reject) => {
-        const url = `https://graph.qq.com/oauth2.0/me?access_token=${access_token}`;
-        axios.get(url).then(res => {
-            const regx = /\((.+)\)/;
-            const openIdArr = res.data.match(regx);
-            const openIdObj = JSON.parse(openIdArr[1]);
-            const openId = openIdObj.openid;
-            resolve(openId);
         }).catch(error => {
             reject(error);
         })
