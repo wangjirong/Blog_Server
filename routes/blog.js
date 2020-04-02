@@ -2,6 +2,7 @@ var express = require('express');
 var Router = express.Router();
 const multer = require('multer')
 const Blog = require('../models/Blog.js')
+const Resource = require('../config/resource')
 /* GET users listing. */
 Router.get('/', function (req, res, next) {
     res.send('respond with a resource');
@@ -56,7 +57,7 @@ Router.post('/addBlog', upload.single('file'), (req, res, next) => {
         classification: req.body.classification,
         type: req.body.type,
         md: req.body.md,
-        coverimg: `http://127.0.0.1:3000/static/coverImage/${time}${req.file.originalname}`,
+        coverimg: `${Resource.serverLocalhostRootURL}/static/coverImage/${time}${req.file.originalname}`,
     }
     new Blog(newBlog).save().then(blog => {
         console.log(blog);

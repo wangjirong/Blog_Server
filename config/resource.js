@@ -1,5 +1,7 @@
 module.exports = {
     MongoDBURL: "mongodb://localhost:27017/Blog", //数据库地址
+    serverRootURL:"http://118.31.173.212:3000",//服务器地址+端口
+    serverLocalhostRootURL:"http://127.0.0.1:3000",//服务器地址+端口
     TokenPrivateKey: 'Welcome come to Erics Blog', //管理员Token密钥
     InvitationCode: 6310, //邀请码
     maril_SMTP_host: '408718358@qq.com', //发邮件邮箱

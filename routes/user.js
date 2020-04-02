@@ -3,7 +3,7 @@ const Router = express.Router();
 const axios = require('axios');
 
 const Resource = require('../config/resource')
-const User = require('../models/User');
+const QQ_User = require('../models/QQ_User');
 
 Router.get('/', async (req, res, next) => {
     res.status(200).send({
@@ -39,11 +39,23 @@ Router.get('/gitHub_oAuth', async (req, res, next) => {
 
 Router.get('/qq_oAuth', async (req, res, next) => {
     const access_token = req.query.access_token;
-    const openId = await getOpenId(access_token);
-    const QQ_User = await getUserInfo(access_token, Resource.QQAppId, openId);
-    console.log(QQ_user);
-    res.status(200).send(QQ_User);
+    const openId = await getOpenId(access_token); //每个qq具有唯一openid
+    let user = await QQ_User.findOne({
+        id: openId
+    })
+    if (!user) {
+        const qq_user = await getUserInfo(access_token, Resource.QQAppId, openId);
+        user =await new QQ_User({
+            id: openId,
+            name: qq_user.name,
+            figureurl: qq_user.figureurl_2,
+            figureurl_qq: qq_user.figureurl_qq_2,
+            gender: qq_user.gender,
+            lastLoginTime: new Date()
+        }).save();
+    }
 
+    res.status(200).send(user);
 })
 
 function getGitHubToken(url) {
@@ -79,16 +91,16 @@ function getGitHubUser(token) {
     })
 }
 
+//与qq号一一对应
 function getOpenId(access_token) {
     return new Promise((resolve, reject) => {
-        axios({
-            method: 'GET',
-            url: `https://graph.qq.com/oauth2.0/me?access_token=${access_token}`,
-            headers: {
-                accept: 'application/json'
-            }
-        }).then(res => {
-            resolve(res.data.openid);
+        const url = `https://graph.qq.com/oauth2.0/me?access_token=${access_token}`;
+        axios.get(url).then(res => {
+            const regx = /\((.+)\)/;
+            const openIdArr = res.data.match(regx);
+            const openIdObj = JSON.parse(openIdArr[1]);
+            const openId = openIdObj.openid;
+            resolve(openId);
         }).catch(error => {
             reject(error);
         })
@@ -97,13 +109,9 @@ function getOpenId(access_token) {
 
 function getUserInfo(access_token, appId, openId) {
     return new Promise((resolve, reject) => {
-        axios({
-            method: "GET",
-            url: `https://graph.qq.com/user/get_user_info?access_token=${access_token}&oauth_consumer_key=${appId}&openId=${openId}`,
-            headers: {
-                accept: 'application/json'
-            }
-        }).then(res => {
+        const url = `https://graph.qq.com/user/get_user_info?access_token=${access_token}&oauth_consumer_key=${appId}&openid=${openId}`;
+        console.log(url);
+        axios.get(url).then(res => {
             resolve(res.data);
         }).catch(error => {
             reject(error);

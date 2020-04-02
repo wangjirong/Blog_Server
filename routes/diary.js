@@ -20,7 +20,7 @@ Router.post('/addDiary', upload.array('files'), async (req, res, next) => {
     const fileArray = req.files;
     let filePath = [];
     fileArray.forEach(img => {
-        let path = `http://127.0.0.1:3000/static/diaryImage${time}${img.originalname}`;
+        let path = `${Resource.serverLocalhostRootURL}/static/diaryImage${time}${img.originalname}`;
         filePath.push(path);
         new Diary({
             text: req.body.text,
