@@ -2,6 +2,7 @@ const express = require('express');
 const Router = express.Router();
 const multer = require('multer');
 const Diary = require('../models/Diary.js');
+const Resource = require('../config/resource')
 
 let time = '';
 const storage = multer.diskStorage({
@@ -20,7 +21,7 @@ Router.post('/addDiary', upload.array('files'), async (req, res, next) => {
     const fileArray = req.files;
     let filePath = [];
     fileArray.forEach(img => {
-        let path = `${Resource.serverLocalhostRootURL}/static/diaryImage${time}${img.originalname}`;
+        let path = `${Resource.serverRootURL}/static/diaryImage${time}${img.originalname}`;
         filePath.push(path);
         new Diary({
             text: req.body.text,
