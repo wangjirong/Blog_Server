@@ -45,7 +45,9 @@ Router.get('/qq_oAuth', async (req, res, next) => {
     })
     if (!user) {
         const qq_user = await getUserInfo(access_token, Resource.QQAppId, openId);
-        user =await new QQ_User({
+        console.log(qq_user);
+
+        user = await new QQ_User({
             id: openId,
             name: qq_user.name,
             figureurl: qq_user.figureurl_2,
@@ -54,8 +56,12 @@ Router.get('/qq_oAuth', async (req, res, next) => {
             lastLoginTime: new Date()
         }).save();
     }
-
-    res.status(200).send(user);
+    const qqUser = {
+        userName: user.name,
+        avatar: user.figureurl,
+        id: openId,
+    }
+    res.status(200).send(qqUser);
 })
 
 function getGitHubToken(url) {
