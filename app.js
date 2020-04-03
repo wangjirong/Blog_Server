@@ -8,6 +8,9 @@ var usersRouter = require('./routes/user'); //普通用户
 var blogsRouter = require('./routes/blog'); //博客
 var diaryRouter = require('./routes/diary'); //日志
 var messageRouter = require('./routes/message'); //留言
+var commentRouter = require('./routes/comment'); //评论
+
+
 const history = require('connect-history-api-fallback')
 
 var app = express();
@@ -26,6 +29,7 @@ app.use('/user', usersRouter);
 app.use('/blog', blogsRouter);
 app.use('/diary', diaryRouter);
 app.use('/message', messageRouter);
+app.use('/comment', commentRouter);
 
 
 const ejs = require('ejs')
