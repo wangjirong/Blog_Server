@@ -2,6 +2,9 @@ var express = require('express');
 var Router = express.Router();
 const multer = require('multer')
 const Blog = require('../models/Blog.js')
+const Comment = require('../models/Comment')
+const CommentReply = require('../models/CommentReply')
+
 const Resource = require('../config/resource')
 /* GET users listing. */
 Router.get('/', function (req, res, next) {
@@ -67,14 +70,24 @@ Router.post('/addBlog', upload.single('file'), (req, res, next) => {
 })
 
 Router.delete('/deleteBlog', async (req, res, next) => {
-    Blog.deleteOne({
-        _id: req.body._id
-    }).then(isDel => {
-        res.status(200).send("Success");
-    }).catch(error => {
-        throw error;
-    })
-
-
+    const flag = await deleteBlog(req.body._id);
+    if (flag) res.status(200).send("删除成功");
+    else res.status(400).send("删除失败");
 })
+//根据文章id删除博客-评论-回复
+async function deleteBlog(id) {
+    return new Promise(async (resolve, reject) => {
+        const isdelBlog = Blog.deleteOne({
+            _id: id
+        });
+        const isdelCom = await Comment.deleteMany({
+            article_id: id
+        });
+        const isdelRep = await CommentReply.deleteMany({
+            article_id: id
+        });
+        if (isdelBlog && isdelCom && isdelRep) resolve(true);
+        else reject(false)
+    })
+}
 module.exports = Router;

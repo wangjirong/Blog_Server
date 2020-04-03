@@ -1,7 +1,7 @@
 const express = require('express');
 const Router = express.Router();
 const Message = require('../models/Message');
-const User = require('../models/QQ_User');
+const QQ_User = require('../models/QQ_User');
 const MessageReply = require('../models/MessageReply');
 
 Router.get('/', async (req, res, next) => {
@@ -12,20 +12,24 @@ Router.get('/', async (req, res, next) => {
 //留言
 Router.post('/leaveMessage', async (req, res, next) => {
     const message = req.body;
+    const user = await getUserByOpenId(message.user_id);
     const newMessage = await new Message({
         user_id: message.user_id,
+        userName: user.name,
+        userAvatar: user.figureurl ,
         date: message.date,
         text: message.text,
         adress: message.adress,
         brower: message.browserType
     }).save();
-    res.status(200).send(newMessage);
+    console.log(newMessage);
+    
+    res.status(200).send("success");
 })
 //获得所有留言
 Router.get('/getAllMessages', async (req, res, next) => {
     const messages = await Message.find();
     for (let message of messages) {
-        const user = await getUserByOpenId(message.user_id);
         message.replys = await getAllReplyByUserId(message._id);
     }
     res.status(200).send(messages);
@@ -35,17 +39,23 @@ Router.get('/getAllMessages', async (req, res, next) => {
 Router.post('/sendMessageReply', async (req, res, next) => {
     const reply = req.body;
     console.log(reply);
+    const fromUser = await getUserByOpenId(reply.fromUserId)
+    const toUser = await getUserByOpenId(reply.toUserId)
     const messageReply = await new MessageReply({
         parentId: reply.parentId,
         fromUserId: reply.fromUserId,
+        fromUserName: fromUser.name,
+        fromUserAvatar: fromUser.figureurl ,
         toUserId: reply.toUserId,
+        toUserName: toUser.name,
         text: reply.text,
         adress: reply.adress,
         browser: reply.browser
     }).save();
     console.log(messageReply);
-    res.status(200).send(messageReply);
+    res.status(200).send("success");
 })
+
 //根据根节点parentId用户id查找该评论下的所有留言回复
 function getAllReplyByUserId(parentId) {
     return new Promise((resolve, reject) => {
@@ -57,20 +67,14 @@ function getAllReplyByUserId(parentId) {
             reject(error);
         })
     })
-
 }
 //根据openId查找qq用户
 function getUserByOpenId(openId) {
     return new Promise((resolve, reject) => {
-        User.find({
+        QQ_User.findOne({
             id: openId
         }).then(user => {
-            const p_user = {
-                userName: user.userName,
-                avatar: user.figureurl,
-                id: user.id
-            }
-            resolve(p_user)
+            resolve(user)
         }).catch(error => {
             reject(error);
         })

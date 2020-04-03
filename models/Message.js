@@ -4,6 +4,14 @@ module.exports = Message = mongoose.model("Message", new mongoose.Schema({
         type: String,
         required: true
     },
+    userName: {
+        type: String,
+        required: true
+    },
+    userAvatar: {
+        type: String,
+        required: true
+    },
     date: {
         type: String,
         default: Date.now()
@@ -18,6 +26,5 @@ module.exports = Message = mongoose.model("Message", new mongoose.Schema({
     brower: {
         type: String
     },
-    replys:{
-    }
+    replys: {}
 }))

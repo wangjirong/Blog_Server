@@ -23,6 +23,8 @@ app.use(cookieParser());
 app.use(history());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/static/', express.static(path.join(__dirname, 'static')));
+
+//本地服务使用
 app.use('/', indexRouter);
 app.use('/manager', managersRouter);
 app.use('/user', usersRouter);
@@ -30,6 +32,14 @@ app.use('/blog', blogsRouter);
 app.use('/diary', diaryRouter);
 app.use('/message', messageRouter);
 app.use('/comment', commentRouter);
+
+//服务器使用
+// app.use('/api/manager', managersRouter);
+// app.use('/api/user', usersRouter);
+// app.use('/api/blog', blogsRouter);
+// app.use('/api/diary', diaryRouter);
+// app.use('/api/message', messageRouter);
+// app.use('/api/comment', commentRouter);
 
 
 const ejs = require('ejs')

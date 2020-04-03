@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-module.exports = User = mongoose.model('User', new mongoose.Schema({
+module.exports = QQ_User = mongoose.model('QQ_User', new mongoose.Schema({
     //用户Id,唯一标识符 qq____openid
     id: {
         type: String,

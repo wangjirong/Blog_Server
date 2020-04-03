@@ -40,8 +40,6 @@ Router.get('/gitHub_oAuth', async (req, res, next) => {
 Router.get('/qq_oAuth', async (req, res, next) => {
     const access_token = req.query.access_token;
     const openId = req.query.openId;
-    console.log();
-    
     let user = await QQ_User.findOne({
         id: openId
     })
@@ -51,7 +49,7 @@ Router.get('/qq_oAuth', async (req, res, next) => {
 
         user = await new QQ_User({
             id: openId,
-            name: qq_user.name,
+            name: qq_user.nickname,
             figureurl: qq_user.figureurl_2,
             figureurl_qq: qq_user.figureurl_qq_2,
             gender: qq_user.gender,
