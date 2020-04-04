@@ -9,6 +9,7 @@ Router.get('/', async (req, res, next) => {
         msg: "success"
     });
 })
+
 //留言
 Router.post('/leaveMessage', async (req, res, next) => {
     const message = req.body;
@@ -16,16 +17,15 @@ Router.post('/leaveMessage', async (req, res, next) => {
     const newMessage = await new Message({
         user_id: message.user_id,
         userName: user.name,
-        userAvatar: user.figureurl ,
+        userAvatar: user.figureurl,
         date: message.date,
         text: message.text,
         adress: message.adress,
         brower: message.browserType
     }).save();
-    console.log(newMessage);
-    
-    res.status(200).send("success");
+    if (newMessage) res.status(200).send("success");
 })
+
 //获得所有留言
 Router.get('/getAllMessages', async (req, res, next) => {
     const messages = await Message.find();
@@ -38,22 +38,20 @@ Router.get('/getAllMessages', async (req, res, next) => {
 //回复留言
 Router.post('/sendMessageReply', async (req, res, next) => {
     const reply = req.body;
-    console.log(reply);
     const fromUser = await getUserByOpenId(reply.fromUserId)
     const toUser = await getUserByOpenId(reply.toUserId)
     const messageReply = await new MessageReply({
         parentId: reply.parentId,
         fromUserId: reply.fromUserId,
         fromUserName: fromUser.name,
-        fromUserAvatar: fromUser.figureurl ,
+        fromUserAvatar: fromUser.figureurl,
         toUserId: reply.toUserId,
         toUserName: toUser.name,
         text: reply.text,
         adress: reply.adress,
         browser: reply.browser
     }).save();
-    console.log(messageReply);
-    res.status(200).send("success");
+    if (messageReply) res.status(200).send("success");
 })
 
 //根据根节点parentId用户id查找该评论下的所有留言回复

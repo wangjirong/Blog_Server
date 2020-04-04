@@ -11,6 +11,7 @@ Router.get('/', function (req, res, next) {
     res.send('respond with a resource');
 });
 
+//首页三篇文章
 Router.get('/index', function (req, res, next) {
     Blog.find().sort({
         date: -1
@@ -21,6 +22,7 @@ Router.get('/index', function (req, res, next) {
     })
 });
 
+//博客详情—---根据文章ID唯一标识符
 Router.get('/detailBlog', (req, res, next) => {
     Blog.findById(req.query._id).then(blog => {
         res.status(200).send(blog);
@@ -29,6 +31,7 @@ Router.get('/detailBlog', (req, res, next) => {
     })
 })
 
+//获取所有博客
 Router.get('/allBlog', (req, res, next) => {
     Blog.find().sort({
         id: -1
@@ -53,6 +56,7 @@ const upload = multer({
     storage: storage
 });
 
+//添加文章
 Router.post('/addBlog', upload.single('file'), (req, res, next) => {
     const newBlog = {
         title: req.body.title,
@@ -69,6 +73,7 @@ Router.post('/addBlog', upload.single('file'), (req, res, next) => {
     res.status(200).send('success')
 })
 
+//删除文章--根据文章唯一标识_id
 Router.delete('/deleteBlog', async (req, res, next) => {
     const flag = await deleteBlog(req.body._id);
     if (flag) res.status(200).send("删除成功");
@@ -77,9 +82,11 @@ Router.delete('/deleteBlog', async (req, res, next) => {
 //根据文章id删除博客-评论-回复
 async function deleteBlog(id) {
     return new Promise(async (resolve, reject) => {
-        const isdelBlog = Blog.deleteOne({
-            _id: id
-        });
+        let isdelBlog = false;
+        Blog.findByIdAndDelete(id, (error, doc) => {
+            if (error) reject(error);
+            else if (doc) isdelBlog = true;
+        })
         const isdelCom = await Comment.deleteMany({
             article_id: id
         });

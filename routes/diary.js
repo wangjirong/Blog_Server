@@ -34,7 +34,7 @@ Router.post('/addDiary', upload.array('files'), async (req, res, next) => {
     res.status(200).send("success");
 })
 Router.get('/getAllDiary', async (req, res, next) => {
-    Diary.find().sort({ date: 1 }).then(diaryArray => {
+    Diary.find().sort({ date: -1 }).then(diaryArray => {
         res.status(200).send(diaryArray);
     }).catch(error => {
         throw error;
