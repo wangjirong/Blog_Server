@@ -18,7 +18,7 @@ Router.post('/leaveMessage', async (req, res, next) => {
         user_id: message.user_id,
         userName: user.name,
         userAvatar: user.figureurl,
-        date:new Date(),
+        date: new Date(),
         text: message.text,
         adress: message.adress,
         brower: message.browserType
@@ -28,7 +28,9 @@ Router.post('/leaveMessage', async (req, res, next) => {
 
 //获得所有留言
 Router.get('/getAllMessages', async (req, res, next) => {
-    const messages = await Message.find();
+    const messages = await Message.find().sort({
+        date: -1
+    });
     for (let message of messages) {
         message.replys = await getAllReplyByUserId(message._id);
     }
@@ -48,7 +50,7 @@ Router.post('/sendMessageReply', async (req, res, next) => {
         toUserId: reply.toUserId,
         toUserName: toUser.name,
         text: reply.text,
-        date:new Date(),
+        date: new Date(),
         adress: reply.adress,
         browser: reply.browser
     }).save();
@@ -60,6 +62,8 @@ function getAllReplyByUserId(parentId) {
     return new Promise((resolve, reject) => {
         MessageReply.find({
             parentId,
+        }).sort({
+            date: -1
         }).then(messageReplys => {
             resolve(messageReplys);
         }).catch(error => {
