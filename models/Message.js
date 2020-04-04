@@ -14,7 +14,7 @@ module.exports = Message = mongoose.model("Message", new mongoose.Schema({
     },
     date: {
         type: String,
-        default: Date.now()
+        default:new Date()
     },
     text: {
         type: String,

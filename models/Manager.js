@@ -10,7 +10,7 @@ module.exports = Manager = mongoose.model('Manager', new mongoose.Schema({
     },
     date: {
         type: Date,
-        default: Date.now()
+        default: new Date()
     },
     avatar: {
         type: String,

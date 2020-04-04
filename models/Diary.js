@@ -8,6 +8,6 @@ module.exports = Diary = mongoose.model('diary', new mongoose.Schema({
     },
     date: {
         type: Date,
-        default: Date.now()
+        default: new Date()
     }
 }))
