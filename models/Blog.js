@@ -18,7 +18,7 @@ module.exports = Blog = mongoose.model('mdfile', new mongoose.Schema({
     //博客发布日期
     date:{
         type:Date,
-        default:Date.now()
+        default:new Date()
     },
     //分类
     classification:{

@@ -34,7 +34,7 @@ Router.get('/detailBlog', (req, res, next) => {
 //获取所有博客
 Router.get('/allBlog', (req, res, next) => {
     Blog.find().sort({
-        id: -1
+        date: -1
     }).then(array => {
         res.status(200).send(array);
     }).catch(error => {
