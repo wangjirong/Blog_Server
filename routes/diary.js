@@ -25,7 +25,8 @@ Router.post('/addDiary', upload.array('files'), async (req, res, next) => {
         filePath.push(path);
         new Diary({
             text: req.body.text,
-            imgList: filePath
+            imgList: filePath,
+            date:new Date()
         }).save().then(diary => {
         }).catch(error => {
             throw error;

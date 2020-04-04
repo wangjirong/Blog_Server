@@ -64,6 +64,7 @@ Router.post('/addBlog', upload.single('file'), (req, res, next) => {
         classification: req.body.classification,
         type: req.body.type,
         md: req.body.md,
+        date:new Date(),
         coverimg: `${Resource.serverRootURL}/static/coverImage/${time}${req.file.originalname}`,
     }
     new Blog(newBlog).save().then(blog => {

@@ -18,7 +18,7 @@ Router.post('/leaveMessage', async (req, res, next) => {
         user_id: message.user_id,
         userName: user.name,
         userAvatar: user.figureurl,
-        date: message.date,
+        date:new Date(),
         text: message.text,
         adress: message.adress,
         brower: message.browserType
@@ -48,6 +48,7 @@ Router.post('/sendMessageReply', async (req, res, next) => {
         toUserId: reply.toUserId,
         toUserName: toUser.name,
         text: reply.text,
+        date:new Date(),
         adress: reply.adress,
         browser: reply.browser
     }).save();

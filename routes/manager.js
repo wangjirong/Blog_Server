@@ -52,6 +52,7 @@ Router.post('/register', async (req, res, next) => {
           userName: manager.userName,
           password: manager.password,
           email: manager.email,
+          date:new Date(),
           cellPhone: manager.cellphone
         }).save();
         if (m) res.status(200).send("注册成功")
