@@ -64,7 +64,7 @@ Router.post('/addBlog', upload.single('file'), (req, res, next) => {
         classification: req.body.classification,
         type: req.body.type,
         md: req.body.md,
-        date:new Date(),
+        date: new Date(),
         coverimg: `${Resource.serverRootURL}/static/coverImage/${time}${req.file.originalname}`,
     }
     new Blog(newBlog).save().then(blog => {
@@ -80,6 +80,16 @@ Router.delete('/deleteBlog', async (req, res, next) => {
     if (flag) res.status(200).send("删除成功");
     else res.status(400).send("删除失败");
 })
+
+//根据关键词搜索博客文章
+Router.get('/searchBlogByKeyword', async (req, res, next) => {
+    const keyword = req.query.keyword;
+    console.log(keyword);
+    const blogArr = await searchBlogByKeyword(keyword);
+    res.status(200).send(blogArr);
+
+})
+
 //根据文章id删除博客-评论-回复
 async function deleteBlog(id) {
     return new Promise(async (resolve, reject) => {
@@ -98,4 +108,32 @@ async function deleteBlog(id) {
         else reject(false)
     })
 }
+
+//根据关键词进行模糊查询文章---作者、标题、描述.......
+async function searchBlogByKeyword(keyword) {
+    return new Promise(async (resolve, reject) => {
+        const regx = new RegExp(keyword, 'i');
+        const res = await Blog.find({
+            '$or': [{
+                    title: {
+                        $regex: regx
+                    }
+                },
+                {
+                    state: {
+                        $regex: regx
+                    }
+                },
+                {
+                    classification: {
+                        $regex: regx
+                    }
+                },
+            ]
+        });
+        if (res) resolve(res);
+        else reject(new Error());
+    })
+}
+
 module.exports = Router;
