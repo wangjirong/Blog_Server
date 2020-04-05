@@ -4,6 +4,7 @@ const multer = require('multer')
 const Blog = require('../models/Blog.js')
 const Comment = require('../models/Comment')
 const CommentReply = require('../models/CommentReply')
+const QQUser = require('../models/QQ_User');
 
 const Resource = require('../config/resource')
 /* GET users listing. */
@@ -32,7 +33,7 @@ Router.get('/detailBlog', async (req, res, next) => {
     res.status(200).send(blog);
 })
 
-//获取所有博客
+//获取所有博客-置顶文章-热门文章-最近访客
 Router.get('/allBlog', async (req, res, next) => {
     //查找所有文章，按照时间降序排列
     const allBlogs = await Blog.find().sort({
@@ -42,10 +43,13 @@ Router.get('/allBlog', async (req, res, next) => {
     const hotTop5 = await getHotTop5Articles();
     //获取置顶推荐3篇文章
     const recommendTop3 = await getTopRecommendedArticles();
+    //获取最近登录人
+    const recentUser = await getRecentUser();
     if (allBlogs && hotTop5) res.status(200).send({
         allBlogs,
         hotTop5,
         recommendTop3,
+        recentUser
     });
 
 })
@@ -183,6 +187,26 @@ async function getCommentCount(id) {
         });
         if (com && comReply) resolve(com.length + comReply);
         else reject(new Error())
+    })
+}
+
+//获取最近登录人----头像和名字
+async function getRecentUser() {
+    return new Promise((resolve, reject) => {
+        QQUser.find().sort({
+            date: -1
+        }).limit(9).then(userArray => {
+            const userList = [];
+            userArray.forEach(user => {
+                userList.push({
+                    userAvatar: user.figureurl,
+                    userName: user.name
+                })
+            })
+            resolve(userList);
+        }).catch(error => {
+            reject(error);
+        })
     })
 }
 
