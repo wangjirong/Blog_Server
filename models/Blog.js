@@ -30,10 +30,10 @@ module.exports = Blog = mongoose.model('mdfile', new mongoose.Schema({
         type:Number,
         default:0,
     },
-    //留言
-    message:{
-        type:Array,
-        default: []
+    //留言数量
+    commentNum:{
+        type:Number,
+        default: 0
     },
     //类型---原创、转载
     type:{

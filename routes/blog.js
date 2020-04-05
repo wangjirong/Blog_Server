@@ -11,7 +11,7 @@ Router.get('/', function (req, res, next) {
     res.send('respond with a resource');
 });
 
-//首页三篇文章
+//首页三篇文章----置顶推荐
 Router.get('/index', function (req, res, next) {
     Blog.find().sort({
         date: -1
@@ -32,14 +32,21 @@ Router.get('/detailBlog', (req, res, next) => {
 })
 
 //获取所有博客
-Router.get('/allBlog', (req, res, next) => {
-    Blog.find().sort({
+Router.get('/allBlog', async (req, res, next) => {
+    //查找所有文章，按照时间降序排列
+    const allBlogs = await Blog.find().sort({
         date: -1
-    }).then(array => {
-        res.status(200).send(array);
-    }).catch(error => {
-        throw error;
-    })
+    });
+    //获取top5文章
+    const hotTop5 = await getHotTop5Articles();
+    //获取置顶推荐3篇文章
+    const recommendTop3 = await getTopRecommendedArticles();
+    if (allBlogs && hotTop5) res.status(200).send({
+        allBlogs,
+        hotTop5,
+        recommendTop3,
+    });
+
 })
 let time = '';
 const storage = multer.diskStorage({
@@ -86,6 +93,8 @@ Router.get('/searchBlogByKeyword', async (req, res, next) => {
     const keyword = req.query.keyword;
     console.log(keyword);
     const blogArr = await searchBlogByKeyword(keyword);
+    console.log(blogArr);
+
     res.status(200).send(blogArr);
 
 })
@@ -133,6 +142,32 @@ async function searchBlogByKeyword(keyword) {
         });
         if (res) resolve(res);
         else reject(new Error());
+    })
+}
+
+//获取热门HotTop5文章，阅读量最多的5篇
+async function getHotTop5Articles() {
+    return new Promise((resolve, reject) => {
+        Blog.find().sort({
+            readNum: -1
+        }).limit(5).then(array => {
+            resolve(array);
+        }).catch(error => {
+            reject(error);
+        })
+    })
+}
+
+//获取置顶推荐3篇文章,评论数量最多的三篇
+async function getTopRecommendedArticles() {
+    return new Promise((resolve, reject) => {
+        Blog.find().sort({
+            commentNum: -1
+        }).limit(3).then(array => {
+            resolve(array);
+        }).catch(error => {
+            reject(error);
+        })
     })
 }
 
