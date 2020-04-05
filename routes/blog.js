@@ -22,13 +22,14 @@ Router.get('/index', function (req, res, next) {
     })
 });
 
-//博客详情—---根据文章ID唯一标识符
-Router.get('/detailBlog', (req, res, next) => {
-    Blog.findById(req.query._id).then(blog => {
-        res.status(200).send(blog);
-    }).catch(error => {
-        throw error;
-    })
+//博客详情—---根据文章ID唯一标识符---文章阅读量+1
+Router.get('/detailBlog', async (req, res, next) => {
+    const blog = await Blog.findByIdAndUpdate(req.query._id, {
+        '$inc': {
+            readerNum: +1
+        }
+    });
+    res.status(200).send(blog);
 })
 
 //获取所有博客
@@ -168,6 +169,20 @@ async function getTopRecommendedArticles() {
         }).catch(error => {
             reject(error);
         })
+    })
+}
+
+//获取文章评论数量--根据文章唯一标识_id
+async function getCommentCount(id) {
+    return new Promise(async (resolve, reject) => {
+        const com = await Comment.find({
+            article_id: id
+        });
+        const comReply = await CommentReply.find({
+            article_id: id
+        });
+        if (com && comReply) resolve(com.length + comReply);
+        else reject(new Error())
     })
 }
 
