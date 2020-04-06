@@ -45,8 +45,6 @@ Router.get('/allBlog', async (req, res, next) => {
     const recommendTop3 = await getTopRecommendedArticles();
     //获取最近登录人
     const recentUser = await getRecentUser();
-    console.log(recentUser);
-    
     if (allBlogs && hotTop5) res.status(200).send({
         allBlogs,
         hotTop5,
