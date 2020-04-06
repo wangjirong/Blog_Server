@@ -13,8 +13,8 @@ module.exports = Message = mongoose.model("Message", new mongoose.Schema({
         required: true
     },
     date: {
-        type: String,
-        default:new Date()
+        type: Date,
+        default: new Date()
     },
     text: {
         type: String,

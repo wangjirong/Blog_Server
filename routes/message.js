@@ -32,8 +32,11 @@ Router.get('/getAllMessages', async (req, res, next) => {
         date: -1
     });
     for (let message of messages) {
+        console.log(message.text);
         message.replys = await getAllReplyByUserId(message._id);
+
     }
+
     res.status(200).send(messages);
 })
 
