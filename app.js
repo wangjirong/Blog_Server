@@ -57,9 +57,13 @@ app.set('view engine', 'html')
 
 
 const mongoose = require('mongoose');
-const MongoURL = require('./config/resource').MongoDBURL;
+const MongoURL = require('./config/resource').ServerMongoDBURL;
+console.log(MongoURL);
+
 mongoose.connect(MongoURL, {
-  useNewUrlParser: true
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true
 }, (err, conn) => {
   if (err) throw err;
   else if (conn) console.log("DataBase is connected in 27017!");

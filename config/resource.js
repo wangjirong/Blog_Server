@@ -1,7 +1,10 @@
 module.exports = {
-    MongoDBURL: "mongodb://localhost:27017/Blog", //数据库地址
-    serverRootURL:"http://118.31.173.212:3000",//服务器地址+端口
-    serverLocalhostRootURL:"http://127.0.0.1:3000",//服务器地址+端口
+    MongoDBURL: "mongodb://admin:123456@localhost:27017/Blog?authSource=admin", //数据库地址
+    ServerMongoDBURL: `mongodb://Eric:.5g$d&l6,%f.(5fs8),#@localhost:27017/Blog`,//@-%40
+    serverRootURL: "http://118.31.173.212:3000", //服务器地址+端口
+    serverLocalhostRootURL: "http://127.0.0.1:3000", //服务器地址+端口
+    MongoDBRootPassword: "118.31.173.212.blogseric",
+    MongoDBEricPwd: ".5g$d&l6,@f.(5fs8),#$",
     TokenPrivateKey: 'Welcome come to Erics Blog', //管理员Token密钥
     InvitationCode: 6310, //邀请码
     maril_SMTP_host: '408718358@qq.com', //发邮件邮箱
@@ -13,3 +16,7 @@ module.exports = {
     QQAppKey: "86c170735e6c0b9de4311ee93250a7cc"
 
 }
+
+
+
+    
