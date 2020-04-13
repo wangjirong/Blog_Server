@@ -38,9 +38,7 @@ Router.get('/detailBlog', async (req, res, next) => {
 //获取所有博客-置顶文章-热门文章-最近访客
 Router.get('/allBlog', async (req, res, next) => {
     //查找所有文章，按照时间降序排列
-    const allBlogs = await Blog.find().sort({
-        date: -1
-    });
+    const allBlogs = await Blog.find();
     //获取top5文章
     const hotTop5 = await getHotTop5Articles();
     //获取置顶推荐3篇文章
@@ -48,7 +46,7 @@ Router.get('/allBlog', async (req, res, next) => {
     //获取最近登录人
     const recentUser = await getRecentUser();
     if (allBlogs && hotTop5) res.status(200).send({
-        allBlogs,
+        allBlogsCount: allBlogs.length,
         hotTop5,
         recommendTop3,
         recentUser
@@ -107,6 +105,14 @@ Router.get('/searchBlogByKeyword', async (req, res, next) => {
 
     res.status(200).send(blogArr);
 
+})
+
+//分页功能，根据分页大小和当前页获取数据
+Router.get('/getBlogByPageSize_Index', async (req, res, next) => {
+    const pageSize = req.query.pageSize;
+    const pageIndex = req.query.pageIndex;
+    const result = await getBlogsByPage(pageIndex, pageSize);
+    if (result) res.status(200).send(result);
 })
 
 //根据文章id删除博客-评论-回复
@@ -211,6 +217,17 @@ async function getRecentUser() {
             resolve(userList);
         }).catch(error => {
             reject(error);
+        })
+    })
+}
+
+//分页功能，根据页面大小和当前页动态获取文章
+async function getBlogsByPage(pageIndex, pageSize) {
+    return new Promise((resolve, reject) => {
+        Blog.find().skip((parseInt(pageIndex) - 1) * parseInt(pageSize)).limit(parseInt(pageSize)).then(res => {
+            resolve(res)
+        }).catch(error => {
+            reject(error)
         })
     })
 }
