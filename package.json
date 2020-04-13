@@ -6,6 +6,7 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
+    "ali-oss": "^6.6.0",
     "axios": "^0.19.2",
     "bcryptjs": "^2.4.3",
     "connect-history-api-fallback": "^1.6.0",

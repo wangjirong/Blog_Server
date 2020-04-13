@@ -57,8 +57,7 @@ app.set('view engine', 'html')
 
 
 const mongoose = require('mongoose');
-const MongoURL = require('./config/resource').ServerMongoDBURL;
-console.log(MongoURL);
+const MongoURL = require('./config/resource').ServerMongoDBURLCirev1;
 
 mongoose.connect(MongoURL, {
   useNewUrlParser: true,

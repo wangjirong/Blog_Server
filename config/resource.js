@@ -1,6 +1,9 @@
 module.exports = {
     MongoDBURL: "mongodb://admin:123456@localhost:27017/Blog?authSource=admin", //数据库地址
-    ServerMongoDBURL: `mongodb://Eric:.5g$d&l6,%f.(5fs8),#@localhost:27017/Blog`,//@-%40
+    ServerMongoDBURLEric: `mongodb://Eric:.5g$d&l6,%f.(5fs8),#@localhost:27017/Blog`,//@-%40
+    ServerMongoDBURLCirev: `mongodb://Cirev:.5g$d&l6,%f.(5fs8),#cirev@localhost:27017/Blog`,//@-%40
+    ServerMongoDBURLCirev1: `mongodb://Cirev:.5g$d&l6,%f.(5fs8),#cirev@118.31.173.212:27017/Blog`,//@-%40
+    ServerMongoDBURL: `mongodb://root:118.31.173.212.blogseric@localhost:27017/Blog`,//@-%40
     serverRootURL: "http://118.31.173.212:3000", //服务器地址+端口
     serverLocalhostRootURL: "http://127.0.0.1:3000", //服务器地址+端口
     MongoDBRootPassword: "118.31.173.212.blogseric",

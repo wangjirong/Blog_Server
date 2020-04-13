@@ -3,7 +3,7 @@ const Router = express.Router();
 const multer = require('multer');
 const Diary = require('../models/Diary.js');
 const Resource = require('../config/resource')
-
+const aliOSSUpload = require('../uploads')
 let time = '';
 const storage = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -15,27 +15,33 @@ const storage = multer.diskStorage({
     }
 })
 
-const upload = multer({ storage: storage });
+const upload = multer({
+    storage: storage
+});
 
 Router.post('/addDiary', upload.array('files'), async (req, res, next) => {
     const fileArray = req.files;
     let filePath = [];
     fileArray.forEach(img => {
         let path = `${Resource.serverRootURL}/static/diaryImage${time}${img.originalname}`;
+        const result = aliOSSUpload.client.put(`/Blog-Cover-Image/${img.originalname}`);
+        console.log(result);
+
         filePath.push(path);
         new Diary({
             text: req.body.text,
             imgList: filePath,
-            date:new Date()
-        }).save().then(diary => {
-        }).catch(error => {
+            date: new Date()
+        }).save().then(diary => {}).catch(error => {
             throw error;
         })
     })
     res.status(200).send("success");
 })
 Router.get('/getAllDiary', async (req, res, next) => {
-    Diary.find().sort({ date: -1 }).then(diaryArray => {
+    Diary.find().sort({
+        date: -1
+    }).then(diaryArray => {
         res.status(200).send(diaryArray);
     }).catch(error => {
         throw error;

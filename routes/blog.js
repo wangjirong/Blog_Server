@@ -1,6 +1,8 @@
 var express = require('express');
 var Router = express.Router();
 const multer = require('multer')
+const aliOSSUpload = require('../uploads')
+
 const Blog = require('../models/Blog.js')
 const Comment = require('../models/Comment')
 const CommentReply = require('../models/CommentReply')
@@ -69,7 +71,9 @@ const upload = multer({
 });
 
 //添加文章
-Router.post('/addBlog', upload.single('file'), (req, res, next) => {
+Router.post('/addBlog', upload.single('file'), async (req, res, next) => {
+    const result = await aliOSSUpload.uploadImage('Blog-Cover-Image/' + req.file.originalname, `static/coverImage/${time}${req.file.originalname}`)
+    console.log(result);
     const newBlog = {
         title: req.body.title,
         state: req.body.state,
@@ -77,11 +81,12 @@ Router.post('/addBlog', upload.single('file'), (req, res, next) => {
         type: req.body.type,
         md: req.body.md,
         date: new Date(),
-        coverimg: `${Resource.serverRootURL}/static/coverImage/${time}${req.file.originalname}`,
+        coverimg: result.url
     }
-    new Blog(newBlog).save().then(blog => {
-        console.log(blog);
-    })
+    //删除本地文件
+    await aliOSSUpload.deleteImage(`static/coverImage/${time}${req.file.originalname}`);
+
+    await new Blog(newBlog).save()
     time = '';
     res.status(200).send('success')
 })
