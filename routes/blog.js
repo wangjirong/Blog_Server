@@ -47,6 +47,7 @@ Router.get('/allBlog', async (req, res, next) => {
     const recentUser = await getRecentUser();
     if (allBlogs && hotTop5) res.status(200).send({
         allBlogsCount: allBlogs.length,
+        allBlogs,
         hotTop5,
         recommendTop3,
         recentUser
@@ -155,6 +156,8 @@ async function searchBlogByKeyword(keyword) {
                     }
                 },
             ]
+        }).sort({
+            date: -1
         });
         if (res) resolve(res);
         else reject(new Error());
@@ -165,7 +168,8 @@ async function searchBlogByKeyword(keyword) {
 async function getHotTop5Articles() {
     return new Promise((resolve, reject) => {
         Blog.find().sort({
-            readNum: -1
+            readNum: -1,
+            date: -1
         }).limit(5).then(array => {
             resolve(array);
         }).catch(error => {
@@ -178,7 +182,8 @@ async function getHotTop5Articles() {
 async function getTopRecommendedArticles() {
     return new Promise((resolve, reject) => {
         Blog.find().sort({
-            commentNum: -1
+            commentNum: -1,
+            date: -1
         }).limit(3).then(array => {
             resolve(array);
         }).catch(error => {
@@ -224,7 +229,9 @@ async function getRecentUser() {
 //分页功能，根据页面大小和当前页动态获取文章
 async function getBlogsByPage(pageIndex, pageSize) {
     return new Promise((resolve, reject) => {
-        Blog.find().skip((parseInt(pageIndex) - 1) * parseInt(pageSize)).limit(parseInt(pageSize)).then(res => {
+        Blog.find().skip((parseInt(pageIndex) - 1) * parseInt(pageSize)).limit(parseInt(pageSize)).sort({
+            date: -1
+        }).then(res => {
             resolve(res)
         }).catch(error => {
             reject(error)
