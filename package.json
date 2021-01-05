@@ -7,7 +7,7 @@
   },
   "dependencies": {
     "ali-oss": "^6.6.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bcryptjs": "^2.4.3",
     "connect-history-api-fallback": "^1.6.0",
     "cookie-parser": "~1.4.4",
